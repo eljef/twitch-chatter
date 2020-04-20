@@ -29,6 +29,12 @@ func badExit(data interface{}) {
 	os.Exit(-1)
 }
 
+func closeWS() {
+	if err := common.WSClient.Disconnect(); err != nil {
+		common.LogError(err)
+	}
+}
+
 func configPlugins(configData *config.Data) {
 	dispatcher.Config(configData)
 	sceneswitch.Config(configData)
@@ -63,7 +69,7 @@ func main() {
 	if err := common.WSClient.Connect(); err != nil {
 		badExit(err)
 	}
-	defer common.WSClient.Disconnect()
+	defer closeWS()
 
 	configPlugins(configData)
 
