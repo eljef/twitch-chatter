@@ -1,0 +1,73 @@
+#!/bin/bash
+# Copyright (C) 2020 Jef Oliver. All rights reserved.
+# Use of this source code is governed by a license
+# that can be found in the LICENSE file.
+#
+# Authors:
+# Jef Oliver <jef@eljef.me>
+
+function build_all() {
+    build_darwin "${1}"
+    build_linux "${1}"
+    build_windows "${1}"
+}
+
+function build_common() {
+    echo "Building ${2}:${3}"
+    mkdir -p "release-${1}/twitch-chatter-${1}-${2}-${3}"
+    GOOS="${2}" GOARCH="${4}" go build -o "release-${1}/twitch-chatter-${1}-${2}-${3}/twitch-chatter" ./cmd/twitch-chatter
+}
+
+function build_darwin() {
+    build_x86 "${1}" "darwin" "zip"
+    build_x86_64 "${1}" "darwin" "zip"
+}
+
+function build_linux() {
+    build_x86 "${1}" "linux" "gzip"
+    build_x86_64 "${1}" "linux" "gzip"
+}
+
+function build_windows() {
+    build_x86 "${1}" "windows" "zip"
+    build_x86_64 "${1}" "windows" "zip"
+}
+
+function build_x86() {
+    build_common "${1}" "${2}" "x86" "386"
+    compress_and_sign "${1}" "${2}" "x86" "${3}"
+}
+
+function build_x86_64() {
+    build_common "${1}" "${2}" "x86_64" "amd64"
+    compress_and_sign "${1}" "${2}" "x86_64" "${3}"
+}
+
+function compress_and_sign() {
+    if [ "${4}" == "zip" ]; then
+        zip_and_sign "${1}" "${2}" "${3}"
+    elif [ "${4}" == "gzip" ]; then
+        gzip_and_sign "${1}" "${2}" "${3}"
+    fi
+}
+
+function gzip_and_sign() {
+    CWD="$(pwd)"
+    cd "release-${1}" || exit 1
+    tar -czf "twitch-chatter-${1}-${2}-${3}.tar.gz" "twitch-chatter-${1}-${2}-${3}" || exit 1
+    rm -rf "twitch-chatter-${1}-${2}-${3}" || exit 1
+    sha512sum "twitch-chatter-${1}-${2}-${3}.tar.gz" > "twitch-chatter-${1}-${2}-${3}.tar.gz.sha512sum"
+    cd "${CWD}" || exit 1
+}
+
+function zip_and_sign() {
+    CWD="$(pwd)"
+    cd "release-${1}" || exit 1
+    zip -qr9 "twitch-chatter-${1}-${2}-${3}.zip" "twitch-chatter-${1}-${2}-${3}" || exit 1
+    rm -rf "twitch-chatter-${1}-${2}-${3}" || exit 1
+    sha512sum "twitch-chatter-${1}-${2}-${3}.zip" > "twitch-chatter-${1}-${2}-${3}.zip.sha512sum"
+    cd "${CWD}" || exit 1
+}
+
+build_all "${1}"
+
