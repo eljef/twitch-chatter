@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Jef Oliver. All rights reserved.
+// Use of this source code is governed by a license
+// that can be found in the LICENSE file.
+
 package main
 
 import (
@@ -5,6 +9,7 @@ import (
 	"os"
 	"os/user"
 	"path"
+	"runtime"
 
 	"git.eljef.me/go/twitch-chatter/internal/pkg/common"
 	"git.eljef.me/go/twitch-chatter/internal/pkg/config"
@@ -13,6 +18,10 @@ import (
 
 	obsws "github.com/christopher-dG/go-obs-websocket"
 	"github.com/gempir/go-twitch-irc/v2"
+)
+
+const (
+	configFileName = "twitch-chatter.toml"
 )
 
 func badExit(data interface{}) {
@@ -25,19 +34,26 @@ func configPlugins(configData *config.Data) {
 	sceneswitch.Config(configData)
 }
 
+func getPaths() []string {
+	ret := []string{configFileName}
+
+	if runtime.GOOS == "windows" {
+		ret = append(ret, path.Join(os.Getenv("USERPROFILE"), configFileName),
+			path.Join(os.Getenv("SYSTEMROOT"), configFileName))
+	} else {
+		usr, err := user.Current()
+		if err != nil {
+			badExit(err)
+		}
+		ret = append(ret, path.Join(usr.HomeDir, fmt.Sprintf(".%s", configFileName)),
+			path.Join("/etc", configFileName))
+	}
+
+	return ret
+}
+
 func main() {
-	usr, err := user.Current()
-	if err != nil {
-		badExit(err)
-	}
-
-	checkPaths := []string{
-		"twitch-chatter.toml",
-		path.Join(usr.HomeDir, "twitch-chatter.toml"),
-		"/etc/twitch-chatter.toml",
-	}
-
-	configData, err := config.ReadConfig(checkPaths)
+	configData, err := config.ReadConfig(getPaths())
 	if err != nil {
 		badExit(err)
 	}
