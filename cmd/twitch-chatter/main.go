@@ -22,6 +22,7 @@ import (
 
 const (
 	configFileName = "twitch-chatter.toml"
+	version        = "0.0.1"
 )
 
 func badExit(data interface{}) {
@@ -59,6 +60,7 @@ func getPaths() []string {
 }
 
 func main() {
+	common.Log(fmt.Sprintf("staring twitch chatter %s", version))
 	configData, err := config.ReadConfig(getPaths())
 	if err != nil {
 		badExit(err)
