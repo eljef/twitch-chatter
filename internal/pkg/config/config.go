@@ -6,8 +6,10 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
+	"git.eljef.me/go/twitch-chatter/internal/pkg/common"
 	"github.com/BurntSushi/toml"
 )
 
@@ -54,6 +56,7 @@ func getConfigPath(paths []string) (string, error) {
 // ReadConfig reads the configuration file for the project
 func ReadConfig(paths []string) (*Data, error) {
 	configFile, err := getConfigPath(paths)
+	common.Log(fmt.Sprintf("using config file: %s", configFile))
 	if err != nil {
 		return nil, err
 	}
