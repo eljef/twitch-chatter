@@ -20,7 +20,7 @@ the following locations.
 
 * Same folder as the executable for Twitch Chatter
 * Users home directory
-  * ~/.twitch-chatter.toml on Linux/Unix,
+  * ~/.config/twitch-chatter.toml on Linux/Unix,
   * %USERPROFILE%/twitch-chatter.toml on Windows
 * The system directory
   * /etc/twitch-chatter.toml on Linux / Unix

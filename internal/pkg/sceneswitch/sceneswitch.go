@@ -9,6 +9,7 @@ import (
 
 	"git.eljef.me/go/twitch-chatter/internal/pkg/common"
 	"git.eljef.me/go/twitch-chatter/internal/pkg/config"
+	"git.eljef.me/go/twitch-chatter/internal/pkg/ws"
 
 	obsws "github.com/christopher-dG/go-obs-websocket"
 )
@@ -43,7 +44,7 @@ func setScene(sceneName string, username string) {
 	if _, ok := scenes[sceneName]; ok {
 		logMessage(sceneName, username)
 		req := obsws.NewSetCurrentSceneRequest(scenes[sceneName])
-		if err := req.Send(common.WSClient); err != nil {
+		if err := req.Send(ws.Get()); err != nil {
 			common.LogError(err)
 		}
 	}

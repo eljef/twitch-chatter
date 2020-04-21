@@ -8,13 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	obsws "github.com/christopher-dG/go-obs-websocket"
 	"github.com/gempir/go-twitch-irc/v2"
-)
-
-var (
-	// WSClient is the OBS websocket client
-	WSClient obsws.Client
 )
 
 // Time returns a formatted time string

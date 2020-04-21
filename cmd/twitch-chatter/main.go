@@ -15,8 +15,8 @@ import (
 	"git.eljef.me/go/twitch-chatter/internal/pkg/config"
 	"git.eljef.me/go/twitch-chatter/internal/pkg/dispatcher"
 	"git.eljef.me/go/twitch-chatter/internal/pkg/sceneswitch"
+	"git.eljef.me/go/twitch-chatter/internal/pkg/ws"
 
-	obsws "github.com/christopher-dG/go-obs-websocket"
 	"github.com/gempir/go-twitch-irc/v2"
 )
 
@@ -28,12 +28,6 @@ const (
 func badExit(data interface{}) {
 	common.LogError(data)
 	os.Exit(-1)
-}
-
-func closeWS() {
-	if err := common.WSClient.Disconnect(); err != nil {
-		common.LogError(err)
-	}
 }
 
 func configPlugins(configData *config.Data) {
@@ -52,7 +46,7 @@ func getPaths() []string {
 		if err != nil {
 			badExit(err)
 		}
-		ret = append(ret, path.Join(usr.HomeDir, fmt.Sprintf(".%s", configFileName)),
+		ret = append(ret, path.Join(usr.HomeDir, ".config", configFileName),
 			path.Join("/etc", configFileName))
 	}
 
@@ -66,12 +60,10 @@ func main() {
 		badExit(err)
 	}
 
-	common.WSClient = obsws.Client{Host: configData.OBS.Host, Port: configData.OBS.Port,
-		Password: configData.OBS.Pass}
-	if err := common.WSClient.Connect(); err != nil {
+	if err := ws.Connect(configData.OBS); err != nil {
 		badExit(err)
 	}
-	defer closeWS()
+	defer ws.Disconnect()
 
 	configPlugins(configData)
 
