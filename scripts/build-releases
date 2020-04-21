@@ -16,6 +16,7 @@ function build_common() {
     echo "Building ${2}:${3}"
     mkdir -p "release-${1}/twitch-chatter-${1}-${2}-${3}"
     GOOS="${2}" GOARCH="${4}" go build -o "release-${1}/twitch-chatter-${1}-${2}-${3}/twitch-chatter" ./cmd/twitch-chatter
+    cp "configs/twitch-chatter.toml" "release-${1}/twitch-chatter-${1}-${2}-${3}/"
 }
 
 function build_darwin() {
