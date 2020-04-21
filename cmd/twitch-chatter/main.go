@@ -5,7 +5,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/user"
 	"path"
@@ -26,7 +25,7 @@ const (
 )
 
 func badExit(data interface{}) {
-	common.LogError(data)
+	common.LogError("%v", data)
 	os.Exit(-1)
 }
 
@@ -54,7 +53,7 @@ func getPaths() []string {
 }
 
 func main() {
-	common.Log(fmt.Sprintf("staring twitch chatter %s", version))
+	common.Log("staring twitch chatter %s", version)
 	configData, err := config.ReadConfig(getPaths())
 	if err != nil {
 		badExit(err)
@@ -74,7 +73,7 @@ func main() {
 	}
 	client.OnWhisperMessage(dispatcher.DispatchWhisper)
 	client.Join(configData.Twitch.Channel)
-	common.Log(fmt.Sprintf("connected to twitch as %s", configData.Twitch.Name))
+	common.Log("connected to twitch as %s", configData.Twitch.Name)
 	err = client.Connect()
 	if err != nil {
 		badExit(err)

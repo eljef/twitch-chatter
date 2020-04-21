@@ -6,9 +6,16 @@ package common
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"time"
 
 	"github.com/gempir/go-twitch-irc/v2"
+)
+
+var (
+	Logger    = log.New(os.Stdout, "[chatt] ", log.LstdFlags)
+	LoggerErr = log.New(os.Stderr, "[chatt] ", log.LstdFlags)
 )
 
 // Time returns a formatted time string
@@ -32,14 +39,14 @@ func IsModerator(user twitch.User) bool {
 }
 
 // Log logs a message to the console
-func Log(data interface{}) {
-	/* #nosec */
-	_, _ = fmt.Printf("[chatt] %s %s\n", Time(), data)
+func Log(format string, args ...interface{}) {
+	Logger.Println(fmt.Sprintf(format, args...))
 }
 
 // LogError logs an error message to the console
-func LogError(data interface{}) {
-	Log(fmt.Sprintf("ERROR OCCURED: %v", data))
+func LogError(format string, args ...interface{}) {
+	LoggerErr.Println("**< ERROR OCCURRED >**")
+	LoggerErr.Println(fmt.Sprintf(format, args...))
 }
 
 // ModCheck determines if the user is a moderator level user

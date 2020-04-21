@@ -5,8 +5,6 @@
 package sceneswitch
 
 import (
-	"fmt"
-
 	"git.eljef.me/go/twitch-chatter/internal/pkg/common"
 	"git.eljef.me/go/twitch-chatter/internal/pkg/config"
 	"git.eljef.me/go/twitch-chatter/internal/pkg/ws"
@@ -36,7 +34,7 @@ func Handle(sceneName string, username string) {
 
 // logMessage logs the request
 func logMessage(sceneName string, username string) {
-	common.Log(fmt.Sprintf("**** Scene Switch: %s -> Requested By: %s ****", sceneName, username))
+	common.Log("**** Scene Switch: %s -> Requested By: %s ****", sceneName, username)
 }
 
 // setScene sets the actual scene in OBS
@@ -45,7 +43,7 @@ func setScene(sceneName string, username string) {
 		logMessage(sceneName, username)
 		req := obsws.NewSetCurrentSceneRequest(scenes[sceneName])
 		if err := req.Send(ws.Get()); err != nil {
-			common.LogError(err)
+			common.LogError("%v", err)
 		}
 	}
 }

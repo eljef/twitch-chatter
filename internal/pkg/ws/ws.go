@@ -24,7 +24,7 @@ func Connect(data config.DataOBS) error {
 // Disconnect disconnects the websocket connection from the OBS WebSocket
 func Disconnect() {
 	if err := wsClient.Disconnect(); err != nil {
-		common.LogError(err)
+		common.LogError("%v", err)
 	}
 }
 
