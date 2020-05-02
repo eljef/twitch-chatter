@@ -1,6 +1,10 @@
+.*
 /build
 /release-*
 /vendor
 /twitch-chatter
 /twitch-chatter.exe
 /twitch-chatter.toml
+
+!.gitignore
+!.golangci.yml
