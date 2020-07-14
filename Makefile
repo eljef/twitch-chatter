@@ -38,6 +38,7 @@ deps_get :
 deps_update :
 	$(info $(NULL))
 	go get -t -u ./...
+	go mod vendor
 	@echo
 
 # gofmt runs gofmt on directories
