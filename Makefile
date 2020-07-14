@@ -11,7 +11,7 @@ help :
 	$(info $(NULL))
 	$(info ** Available Targets **)
 	$(info $(NULL))
-	$(info $(NULL)	build		- builds a development executable into the build direcotry)
+	$(info $(NULL)	build		- builds a development executable into the build directory)
 	$(info $(NULL)	deps_get	- download the dependencies for this project to the vendor folder)
 	$(info $(NULL)	deps_update	- update the dependencies for this project)
 	$(info $(NULL)	gofmt		- runs gofmt, formatting all project source files)
