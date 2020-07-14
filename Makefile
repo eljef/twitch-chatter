@@ -1,6 +1,6 @@
 .PHONY: help all build deps_get deps_update gofmt lint_clean lint_install lint_run release
 
-VERSION := "0.0.2"
+VERSION := "0.0.3"
 NULL :=
 
 # all runs help

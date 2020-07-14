@@ -17,6 +17,10 @@ function build_common() {
     mkdir -p "release-${1}/twitch-chatter-${1}-${2}-${3}"
     GOOS="${2}" GOARCH="${4}" go build -o "release-${1}/twitch-chatter-${1}-${2}-${3}/twitch-chatter" ./cmd/twitch-chatter
     cp "configs/twitch-chatter.toml" "release-${1}/twitch-chatter-${1}-${2}-${3}/"
+
+    if [[ "${2}" == "windows" ]]; then
+        mv "release-${1}/twitch-chatter-${1}-${2}-${3}/twitch-chatter" "release-${1}/twitch-chatter-${1}-${2}-${3}/twitch-chatter.exe"
+    fi
 }
 
 function build_darwin() {
@@ -36,23 +40,23 @@ function build_windows() {
 
 function build_x86() {
     build_common "${1}" "${2}" "x86" "386"
-    compress_and_sign "${1}" "${2}" "x86" "${3}"
+    compress_and_hash "${1}" "${2}" "x86" "${3}"
 }
 
 function build_x86_64() {
     build_common "${1}" "${2}" "x86_64" "amd64"
-    compress_and_sign "${1}" "${2}" "x86_64" "${3}"
+    compress_and_hash "${1}" "${2}" "x86_64" "${3}"
 }
 
-function compress_and_sign() {
-    if [ "${4}" == "zip" ]; then
-        zip_and_sign "${1}" "${2}" "${3}"
-    elif [ "${4}" == "gzip" ]; then
-        gzip_and_sign "${1}" "${2}" "${3}"
+function compress_and_hash() {
+    if [[ "${4}" == "zip" ]]; then
+        zip_and_hash "${1}" "${2}" "${3}"
+    elif [[ "${4}" == "gzip" ]]; then
+        gzip_and_hash "${1}" "${2}" "${3}"
     fi
 }
 
-function gzip_and_sign() {
+function gzip_and_hash() {
     CWD="$(pwd)"
     cd "release-${1}" || exit 1
     tar -czf "twitch-chatter-${1}-${2}-${3}.tar.gz" "twitch-chatter-${1}-${2}-${3}" || exit 1
@@ -61,7 +65,7 @@ function gzip_and_sign() {
     cd "${CWD}" || exit 1
 }
 
-function zip_and_sign() {
+function zip_and_hash() {
     CWD="$(pwd)"
     cd "release-${1}" || exit 1
     zip -qr9 "twitch-chatter-${1}-${2}-${3}.zip" "twitch-chatter-${1}-${2}-${3}" || exit 1
